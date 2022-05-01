@@ -10,6 +10,9 @@ load_dotenv()
 
 from db_utils import DBClient
 from routers import committee
+from routers import subscribers
+from routers import events
+from routers import rsvp
 
 app = FastAPI()
 
@@ -25,6 +28,9 @@ app.add_middleware(
 
 db_client = DBClient()
 app.include_router(committee.router)
+app.include_router(subscribers.router)
+app.include_router(events.router)
+app.include_router(rsvp.router)
 
 
 @app.get("/")

@@ -12,16 +12,22 @@ from la_api.dynamo_utils import DynamoClient
 
 dynamo_client = DynamoClient()
 
+table_name = prefix = 'subscribers'
+
 router = APIRouter(
-    prefix="/rsvp",
-    tags=["rsvp"],
+    prefix=f"/{prefix}",
+    tags=[prefix],
     responses={404: {"description": "Not found"}}
 )
 
 
+fields = ['name', 'email', 'phone']
+
+
 @router.get("/")
-async def get_events():
-    table = dynamo_client.Table('rsvp')
+async def get_subs():
+    global table_name
+    table = dynamo_client.Table(table_name)
     response = table.scan()
     data = response['Items']
     while 'LastEvaluatedKey' in response:
@@ -30,12 +36,31 @@ async def get_events():
     return data
 
 
+@router.get("/{id}")
+async def get_sub(id: str):
+    return []
+
+
 @router.post("/")
-async def add_rsvp(request: Request):
+async def add_sub(request: Request):
+    global fields
     payload = await request.json()
-    for f in ['event_id', 'name', 'email', 'phone', 'free_text', 'members']:
+    item = {
+        'name': {
+            'S': ''
+        },
+        'email': {
+            'S': ''
+        },
+        'phone': {
+            'S': ''
+        }
+    }
+    for f in fields:
         if f not in payload:
             raise HTTPException(status_code=400, detail=f"Missing {f} in payload")
+        else:
+            item[f]['S'] = payload[f]
 
     if not re.match(r"[^@]+@[^@]+\.[^@]+", payload['email']):
         raise HTTPException(status_code=400, detail=f"Invalid email address")
@@ -46,31 +71,5 @@ async def add_rsvp(request: Request):
         aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
         region_name=os.getenv("AWS_REGION"))
 
-    item = {
-        'id': {
-            'S': f"{payload['event_id']}___{payload['email']}"
-        },
-        'event_id': {
-            'S': payload['event_id']
-        },
-        'name': {
-            'S': payload['name']
-        },
-        'email': {
-            'S': payload['email']
-        },
-        'phone': {
-            'S': payload['phone']
-        },
-        'free_text': {
-            'S': payload['free_text']
-        },
-        'members': {
-            'N': str(payload['members'])
-        }
-    }
-
-    client.put_item(TableName='rsvp', Item=item)
+    client.put_item(TableName=table_name, Item=item)
     return {'status': 'success'}
-
-

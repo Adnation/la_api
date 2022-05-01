@@ -13,13 +13,13 @@ from la_api.db_utils import DBClient
 db_client = DBClient()
 
 router = APIRouter(
-    prefix="/news",
-    tags=["news"],
+    prefix="/sandesh",
+    tags=["sandesh"],
     responses={404: {"description": "Not found"}}
 )
 
 
-collection = db_client.db.news
+collection = db_client.db.sandesh
 
 
 @router.get("/")
@@ -33,13 +33,13 @@ async def get_by_(id: str):
 
 
 @router.post("/")
-async def add_sponsor(headline: str = Form(...), date: str = Form(...), picture: UploadFile = File(...),
+async def add_sandesh(month_year: str = Form(...), date_published: str = Form(...), pdf: UploadFile = File(...),
                       description: str = Form(...)):
-    sponsor = {
-        "headline": headline,
-        "date": date,
-        "picture": picture.file.read(),
-        "description": description,
+    add_sandesh = {
+        "month_year": month_year,
+        "date_published": date_published,
+        "pdf": pdf.file.read(),
+        "description": description
     }
-    new_member = collection.insert_one(sponsor).inserted_id
+    new_member = collection.insert_one(add_sandesh).inserted_id
     return json.loads(dumps(new_member))
