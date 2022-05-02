@@ -2,6 +2,7 @@ import os
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -17,7 +18,10 @@ from routers import rsvp
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "lohanadfw.org",
+    "*.lohanadfw.org",
+    "*lohanadfw.org"
 ]
 app.add_middleware(
     CORSMiddleware,
