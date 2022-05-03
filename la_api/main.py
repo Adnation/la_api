@@ -22,7 +22,10 @@ origins = [
     # "https://lohanadfw.org",
     # "http://www.lohanadfw.org",
     # "https://www.lohanadfw.org",
-    "*"
+    "https://lohanadfw.org",
+    "http://lohanadfw.org",
+    "https://www.lohanadfw.org",
+    "http://www.lohanadfw.org"
 ]
 app.add_middleware(
     CORSMiddleware,
