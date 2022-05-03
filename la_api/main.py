@@ -29,7 +29,7 @@ middlewares = [
     Middleware(
         CORSMiddleware,
         allow_origins=["*"],
-        # allow_credentials=True,
+        allow_credentials=True,
         allow_methods=['*'],
         allow_headers=['*']
     )
@@ -37,13 +37,13 @@ middlewares = [
 
 app = FastAPI(middlewares=middlewares)
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     # allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 db_client = DBClient()
 app.include_router(committee.router)
