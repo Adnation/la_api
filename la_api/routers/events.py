@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get("/upcoming-events")
 async def get_events():
     table = dynamo_client.Table('events')
     response = table.scan()
