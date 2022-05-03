@@ -18,14 +18,10 @@ from routers import rsvp
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",
     "http://lohanadfw.org",
     "https://lohanadfw.org",
     "http://www.lohanadfw.org",
-    "https://www.lohanadfw.org",
-    "lohanadfw.org",
-    "*.lohanadfw.org",
-    "*lohanadfw.org"
+    "https://www.lohanadfw.org"
 ]
 app.add_middleware(
     CORSMiddleware,
