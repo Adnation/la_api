@@ -41,7 +41,7 @@ async def get_sub(id: str):
     return []
 
 
-@router.post("/")
+@router.post("/post")
 async def add_sub(request: Request):
     global fields
     payload = await request.json()

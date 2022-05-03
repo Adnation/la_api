@@ -30,7 +30,7 @@ async def get_events():
     return data
 
 
-@router.post("/")
+@router.post("/post")
 async def add_rsvp(request: Request):
     payload = await request.json()
     for f in ['event_id', 'name', 'email', 'phone', 'free_text', 'members']:
