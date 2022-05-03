@@ -31,19 +31,12 @@ middlewares = [
         allow_origins=["*"],
         allow_credentials=True,
         allow_methods=['*'],
-        allow_headers=['*']
+        allow_headers=['*'],
     )
 ]
-
+#
 app = FastAPI(middlewares=middlewares)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# app = FastAPI()
 
 db_client = DBClient()
 app.include_router(committee.router)
@@ -55,3 +48,11 @@ app.include_router(rsvp.router)
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
+
+app = CORSMiddleware(
+    app=app,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
