@@ -19,6 +19,10 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000",
+    "http://lohanadfw.com",
+    "https://lohanadfw.com",
+    "http://www.lohanadfw.com",
+    "https://www.lohanadfw.com",
     "lohanadfw.org",
     "*.lohanadfw.org",
     "*lohanadfw.org"
