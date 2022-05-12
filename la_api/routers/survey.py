@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get("/fetch-all")
 async def get_surveys():
     table = dynamo_client.Table('surveys')
     response = table.scan()
