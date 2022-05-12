@@ -1,16 +1,9 @@
-import os
-import re
-import json
+from datetime import datetime
+from fastapi import APIRouter
 
-from fastapi import UploadFile
-from bson.json_util import dumps
-from bson.objectid import ObjectId
-from fastapi import APIRouter, Form, File, Request, HTTPException
+from la_api.dynamo_utils import DynamoClient
 
-from la_api.db_utils import DBClient
-
-
-db_client = DBClient()
+dynamo_client = DynamoClient()
 
 router = APIRouter(
     prefix="/survey",
@@ -19,25 +12,25 @@ router = APIRouter(
 )
 
 
-collection = db_client.db.survey
-
-
 @router.get("/")
-async def get_all():
-    return json.loads(dumps(collection.find()))
+async def get_surveys():
+    table = dynamo_client.Table('surveys')
+    response = table.scan()
+    data = response['Items']
+    while 'LastEvaluatedKey' in response:
+        response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+        data.extend(response['Items'])
 
+    dated_survey = []
+    tbd_survey = []
+    for d in data:
+        if 'date' not in d or d['date'].upper() == 'TBD':
+            tbd_survey.append(d)
 
-@router.get("/{id}")
-async def get_by_(id: str):
-    return json.loads(dumps(collection.find({"_id": ObjectId(id)})))
+        if datetime.strptime(d['date'], '%m-%d-%Y').date() >= datetime.now().date():
+            d['date'] = datetime.strptime(d['date'], '%m-%d-%Y').date()
+            dated_survey.append(d)
 
-
-@router.post("/")
-async def add_survey(request: Request):
-    payload = await request.json()
-    for f in ['name', 'survey_link', 'expiry']:
-        if f not in payload:
-            raise HTTPException(status_code=400, detail=f"Missing {f} in payload")
-
-    new_member = collection.insert_one(await request.json()).inserted_id
-    return json.loads(dumps(new_member))
+    dated_survey.sort(key=lambda item: item['date'], reverse=True)
+    dated_survey.extend(tbd_survey)
+    return dated_survey
