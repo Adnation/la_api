@@ -18,6 +18,7 @@ from routers import subscribers
 from routers import events
 from routers import rsvp
 from routers import survey
+from routers import sandesh
 
 origins = [
     "http://localhost:3000",
@@ -46,6 +47,7 @@ app.include_router(subscribers.router)
 app.include_router(events.router)
 app.include_router(rsvp.router)
 app.include_router(survey.router)
+app.include_router(sandesh.router)
 
 
 @app.get("/")
