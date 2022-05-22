@@ -104,7 +104,7 @@ async def post_request(request: Request):
             <hr></hr>
             <p>SUBJECT: {payload['subject']}</p>
             <hr></hr>
-            <p>{payload['message']}</p>
+            <p>MESSAGE: {payload['message']}</p>
             <hr></hr>
         </body>
     </html>
@@ -123,7 +123,10 @@ async def post_request(request: Request):
     try:
         response = client.send_email(
             Destination={
-                'ToAddresses': [recipient,],
+                'ToAddresses': ["thakkarmayur@hotmail.com",],
+                'CcAddresses': [
+                    'adityathakkar29@gmail.com',
+                ],
             },
             Message={
                 'Body': {
